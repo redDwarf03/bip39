@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:crypto/crypto.dart' show sha256;
@@ -63,8 +62,8 @@ String entropyToMnemonic(String entropyString) {
   if (entropy.length % 4 != 0) {
     throw ArgumentError(_INVALID_ENTROPY);
   }
-  final entropyBits = _bytesToBinary(entropy);
-  final checksumBits = _deriveChecksumBits(entropy);
+  final entropyBits =_bytesToBinary(Uint8List.fromList(entropy));
+  final checksumBits = _deriveChecksumBits(Uint8List.fromList(entropy));
   final bits = entropyBits + checksumBits;
   final regex = new RegExp(r".{1,11}", caseSensitive: false, multiLine: false);
   final chunks = regex
@@ -73,7 +72,7 @@ String entropyToMnemonic(String entropyString) {
       .toList(growable: false);
   List<String> wordlist = WORDLIST;
   String words =
-      chunks.map((binary) => wordlist[_binaryToByte(binary)]).join(' ');
+      chunks.map((binary) => wordlist[_binaryToByte(binary!)]).join(' ');
   return words;
 }
 
@@ -120,7 +119,7 @@ String mnemonicToEntropy(mnemonic) {
   final regex = RegExp(r".{1,8}");
   final entropyBytes = Uint8List.fromList(regex
       .allMatches(entropyBits)
-      .map((match) => _binaryToByte(match.group(0)))
+      .map((match) => _binaryToByte(match.group(0)!))
       .toList(growable: false));
   if (entropyBytes.length < 16) {
     throw StateError(_INVALID_ENTROPY);

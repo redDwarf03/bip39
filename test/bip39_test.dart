@@ -105,7 +105,7 @@ void testVector(List<dynamic> v, int i) {
     });
     test('generate mnemonic', () {
       bip39.RandomBytes randomBytes = (int size) {
-        return HEX.decode(ventropy);
+        return Uint8List.fromList(HEX.decode(ventropy));
       };
       final code = bip39.generateMnemonic(randomBytes: randomBytes);
       expect(code, equals(vmnemonic), reason: 'generateMnemonic returns randomBytes entropy unmodified');
